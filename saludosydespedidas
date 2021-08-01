@@ -1,0 +1,135 @@
+from tkinter import *
+from random import randint
+import time
+
+#flacoding!
+
+root = Tk()
+
+root.title('Saludos y despedidas')
+root.geometry("550x410")
+root.iconbitmap('bandera.ico')
+
+bg = PhotoImage(file = "Chicamocha.png")
+
+my_background = Label(root, image=bg)
+my_background.place(x=0, y=0, relwidth=1, relheight=1)
+
+def clock():
+    hour = time.strftime("%I")
+    minute = time.strftime("%M")
+    second = time.strftime("%S")
+
+    my_timer.config(text=hour + ":" + minute + ":" + second)
+    my_timer.after(1000, clock)
+
+def update():
+    my_timer.config(text= "New text")
+
+my_timer = Label(root, text="", font=("Helvetica", 48))
+my_timer.pack(pady=20)
+clock()
+
+#my_timer.after(5000, update)
+
+words = [
+    (("Hello"),("Hola")),
+    (("Goodbye"), ("Adiós")),
+    (("How are you?"), ("¿Cómo estás?")),
+    (("Good evening/night"), ("Buenas noches")),
+    (('Good morning'), ("Buenos días")),
+    (("Good afternoon"), ("Buenas tardes")),
+    (("I am well"), ("Estoy bien")),
+    (("I am bad"), ("Estoy mal")),
+    (("I am so-so"), ("Estoy así así")),
+    (("What is your name?"), ("¿Cómo te llamas?")),
+    (("My name is"), ("Me llamo"))
+]
+
+#get a count of our word list
+count = len(words)
+
+#keep track of score
+#def score():
+    #global score_count
+
+    #if my_entry.get().capitalize() == words[random_word][1]:
+        #score_count = score_count +1
+    #else:
+        #print(score_count)
+
+def next():
+    #clear the screen
+    global hinter, hint_count
+    hinter = ""
+    answer_label.config(text=" ")
+    my_entry.delete(0, END)
+    hint_label.config(text="")
+    hinter = ""
+    global random_word
+    #create random selection
+    random_word = randint(0, count-1)
+    #update label with Spanish word
+    spanish_word.config(text=words[random_word][0])
+
+
+def answer():
+    if my_entry.get().capitalize() == words[random_word][1]:
+        answer_label.config(text=f"Correcto - {words[random_word][0]} es {words[random_word][1]}")
+        score_count = score_count + 1
+        print(score_count)
+    else:
+        answer_label.config(text=f"Incorrecto - {words[random_word][0]} NO es {my_entry.get().capitalize()}")
+        print(score_count)
+
+score_count = 0
+
+#keep track of hints
+hinter = ""
+hint_count = 0
+
+def hint():
+    global hint_count
+    global hinter
+
+    if hint_count < len(words[random_word][1]):
+        hinter = hinter + words[random_word][1][hint_count]
+        hint_label.config(text=hinter)
+        hint_count += 1
+
+
+spanish_word = Label(root, text="", font=("Arial", 36), bg="#47516a", fg='white')
+spanish_word.pack(pady=50)
+
+answer_label = Label(root,text="")
+answer_label.pack(pady=20)
+
+my_entry = Entry(root, font=("Arial", 18))
+my_entry.pack(pady=20)
+
+#create buttons
+button_frame = Frame(root)
+button_frame.pack(pady=20)
+
+answer_button = Button(button_frame, text="respuesta", command=answer)
+answer_button.grid(row=0, column=0, padx=20)
+
+next_button = Button(button_frame, text="siguiente palabra", command=next)
+next_button.grid(row=0, column=1)
+
+hint_button = Button(button_frame, text="pista", command=hint)
+hint_button.grid(row=0, column=2, padx=20)
+
+score_label = Label(root, text="Tus puntos son " + str(score_count), font=("Helvetica", 24))
+score_label.pack(pady=20)
+
+#create hint label
+hint_label = Label(root, text="")
+hint_label.pack(pady=20)
+
+my_text = Label(root, text= "Escribe la palabra en español por favor", font=("Calibri", 20), fg='black', bg="#67823b")
+my_text.pack(pady=50)
+#Run next function
+next()
+
+root.mainloop()
