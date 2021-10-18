@@ -1,0 +1,119 @@
+from tkinter import *
+from random import randint
+import time
+
+
+root = Tk()
+
+root.title('Los objetos de la sala de clase')
+root.geometry("550x410")
+root.iconbitmap('bandera.ico')
+
+bg = PhotoImage(file = "Chicamocha.png")
+
+my_background = Label(root, image=bg)
+my_background.place(x=0, y=0, relwidth=1, relheight=1)
+
+
+words = [
+    (("The computer"),("La computadora")),
+    (("The flag"), ("La bandera")),
+    (("The calculators"), ("Las calculadoras")),
+    (("The notebook"), ("El cuaderno")),
+    (('The keyboard'), ("El teclado")),
+    (("The erasers"), ("Los borradores")),
+    (("The trashcan"), ("La papelera")),
+    (("The trashcans"), ("Las papeleras")),
+    (("The paper"), ("El papel")),
+    (("The papers"), ("Los papeles")),
+    (("El bolígrafo"), ("The pen")),
+    (("Los lápices"), ("The pencils")),
+    (("Los ratones"), ("The mice")),
+    (("Las pantallas"), ("The screens")),
+    (("El escritorio"), ("The desk")),
+    (("Los diccionarios"), ("The dictionaries")),
+]
+
+#get a count of our word list
+count = len(words)
+
+
+def next():
+    #clear the screen
+    global hinter, hint_count
+    hinter = ""
+    answer_label.config(text=" ")
+    my_entry.delete(0, END)
+    hint_label.config(text="")
+    hinter = ""
+    global random_word
+    #create random selection
+    random_word = randint(0, count-1)
+    #update label with Spanish word
+    spanish_word.config(text=words[random_word][0])
+
+global number
+number = 0
+
+
+def answer():
+    global number
+    if my_entry.get().capitalize() == words[random_word][1]:
+        answer_label.config(text=f"Correcto - {words[random_word][0]} es {words[random_word][1]}")
+        number += 1
+        score_label.config(text=number)
+    else:
+        answer_label.config(text=f"Incorrecto - {words[random_word][0]} NO es {my_entry.get().capitalize()}")
+        score_label.config(text="Score: " + str(number))
+
+score_count = 0
+
+#keep track of hints
+hinter = ""
+hint_count = 0
+
+def hint():
+    global hint_count
+    global hinter
+
+    if hint_count < len(words[random_word][1]):
+        hinter = hinter + words[random_word][1][hint_count]
+        hint_label.config(text=hinter)
+        hint_count += 1
+
+
+spanish_word = Label(root, text="", font=("Arial", 36), bg="#47516a", fg='white')
+spanish_word.pack(pady=50)
+
+answer_label = Label(root,text="", font=("calibri", 20))
+answer_label.pack(pady=20)
+
+my_entry = Entry(root, font=("Arial", 18))
+my_entry.pack(pady=20)
+
+#create buttons
+button_frame = Frame(root)
+button_frame.pack(pady=20)
+
+answer_button = Button(button_frame, text="responder", font=("Helvetica", 20), command=answer)
+answer_button.grid(row=0, column=0, padx=20)
+
+next_button = Button(button_frame, text="siguiente palabra", font=("Helvetica", 20), command=next)
+next_button.grid(row=0, column=1)
+
+hint_button = Button(button_frame, text="pista", font=("Helvetica", 20), command=hint)
+hint_button.grid(row=0, column=2, padx=20)
+
+score_label = Label(root, text="Score: " + str(number), font=("Helvetica", 18), fg="white", bg="purple")
+score_label.pack(pady=30)
+
+#create hint label
+hint_label = Label(root, text="", font=("calibri", 20))
+hint_label.pack(pady=20)
+
+my_text = Label(root, text= "Escribe la palabra en español por favor", font=("Calibri", 20), fg='black', bg="#67823b")
+my_text.pack(pady=50)
+#Run next function
+next()
+
+root.mainloop()
